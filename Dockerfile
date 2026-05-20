@@ -1,19 +1,17 @@
 ## Stage 1: Build native binary dengan Mandrel
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-25 AS build
 
-USER root
-RUN microdnf install -y maven && microdnf clean all
-
 WORKDIR /build
 
 # Cache dependencies dulu sebelum copy source
-COPY pom.xml .
-RUN mvn dependency:go-offline -B -q
+COPY pom.xml mvnw ./
+COPY .mvn .mvn
+RUN ./mvnw dependency:go-offline -B -q
 
 # Copy source dan build native
 COPY src ./src
 ARG NATIVE_IMAGE_EXTRA_ARGS
-RUN mvn package -Pnative -DskipTests -B \
+RUN ./mvnw package -Pnative -DskipTests -B \
     -Dquarkus.native.native-image-xmx=6g \
     -Dquarkus.native.additional-build-args="${NATIVE_IMAGE_EXTRA_ARGS}"
 
