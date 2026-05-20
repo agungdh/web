@@ -5,20 +5,26 @@ FROM debian:13-slim AS builder
 ENV MANDREL_VERSION=25.0.3.0-Final
 ENV JAVA_HOME=/opt/mandrel
 ENV PATH=$JAVA_HOME/bin:$PATH
+ENV MAVEN_OPTS="-Xmx2g -XX:MaxMetaspaceSize=512m"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl gcc zlib1g-dev && \
+    curl ca-certificates gcc zlib1g-dev binutils && \
     rm -rf /var/lib/apt/lists/* && \
-    curl -sL "https://github.com/graalvm/mandrel/releases/download/mandrel-${MANDREL_VERSION}/mandrel-java25-linux-amd64-${MANDREL_VERSION}.tar.gz" | \
-    tar -xzf - -C /opt && \
-    mv /opt/mandrel-java25-* /opt/mandrel
+    curl -sL --retry 5 --retry-delay 15 --connect-timeout 60 --max-time 900 \
+      -o /tmp/mandrel.tar.gz \
+      "https://github.com/graalvm/mandrel/releases/download/mandrel-${MANDREL_VERSION}/mandrel-java25-linux-amd64-${MANDREL_VERSION}.tar.gz" && \
+    tar -xzf /tmp/mandrel.tar.gz -C /opt && \
+    rm /tmp/mandrel.tar.gz && \
+    mv /opt/mandrel-* /opt/mandrel
 
 COPY . /src
 WORKDIR /src
-RUN ./mvnw package -Dnative -DskipTests \
-    -Dquarkus.native.additional-build-args="-march=${MARCH}"
+RUN chmod +x mvnw && \
+    ./mvnw package -Dnative -DskipTests \
+    -Dquarkus.native.additional-build-args="-march=${MARCH}" \
+    -Dquarkus.native.native-image-xmx=4g
 
-FROM gcr.io/distroless/base-debian13
+FROM gcr.io/distroless/base-debian12
 WORKDIR /app
 COPY --from=builder /src/target/*-runner /app/application
 EXPOSE 8080
