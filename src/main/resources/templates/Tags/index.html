@@ -20,7 +20,7 @@
       </thead>
       <tbody>
         {#for tag in tags}
-        <tr>
+        <tr x-data="{ open: false }">
           <td>{tag.id}</td>
           <td><span class="badge text-bg-secondary">{tag.name}</span></td>
           <td><code>{tag.slug}</code></td>
@@ -29,31 +29,34 @@
               <a href="{uri:Tags.edit(tag.id)}" class="btn btn-outline-primary" title="Edit">
                 <i class="bi bi-pencil"></i>
               </a>
-              <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteTagModal{tag.id}" title="Delete">
+              <button type="button" class="btn btn-outline-danger" @click="open = true" title="Delete">
                 <i class="bi bi-trash"></i>
               </button>
             </div>
 
-            <div class="modal fade" id="deleteTagModal{tag.id}" tabindex="-1" aria-labelledby="deleteTagModalLabel{tag.id}" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="deleteTagModalLabel{tag.id}">Confirm Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <p>Are you sure you want to delete tag <strong>"{tag.name}"</strong>?</p>
-                    <p class="text-muted mb-0">This will soft-delete the tag.</p>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    {#form uri:Tags.delete(tag.id)}
-                      <button type="submit" class="btn btn-danger">Delete</button>
-                    {/form}
+            <template x-teleport="body">
+              <div class="modal-backdrop fade" :class="open ? 'show' : ''" :style="open ? 'display:block' : 'display:none'" style="background:rgba(0,0,0,0.5)"></div>
+              <div class="modal fade" :class="open ? 'show' : ''" :style="open ? 'display:block' : 'display:none'" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Confirm Delete</h5>
+                      <button type="button" class="btn-close" @click="open = false"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>Are you sure you want to delete tag <strong>"{tag.name}"</strong>?</p>
+                      <p class="text-muted mb-0">This will soft-delete the tag.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" @click="open = false">Cancel</button>
+                      {#form uri:Tags.delete(tag.id)}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                      {/form}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </template>
           </td>
         </tr>
         {/for}

@@ -17,21 +17,12 @@
     {/if}
   </header>
 
-  <div class="article-content" id="markdown-content" style="display:none;"></div>
+  <div class="article-content">
+    {post.content.or("").renderMarkdown.raw}
+  </div>
 </article>
 
 <hr class="divider">
 
 <a href="{uri:Blog.index}" class="btn-back">&larr; Back to Blog</a>
-
-<script id="raw-markdown" type="text/markdown">{post.content.or("")}</script>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var raw = document.getElementById('raw-markdown').textContent;
-    var mdEl = document.getElementById('markdown-content');
-    mdEl.innerHTML = marked.parse(raw);
-    mdEl.style.display = '';
-  });
-</script>
 {/include}
