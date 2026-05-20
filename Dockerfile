@@ -1,31 +1,29 @@
-ARG MARCH=x86-64-v2
+## Stage 1: Build native binary dengan Mandrel
+FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-25 AS build
 
-FROM debian:13 AS builder
+USER root
+RUN microdnf install -y maven && microdnf clean all
 
-ENV MANDREL_VERSION=25.0.3.0-Final
-ENV JAVA_HOME=/opt/mandrel
-ENV PATH=$JAVA_HOME/bin:$PATH
-ENV MAVEN_OPTS="-Xmx2g -XX:MaxMetaspaceSize=512m"
+WORKDIR /build
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl gcc zlib1g-dev binutils maven && \
-    rm -rf /var/lib/apt/lists/* && \
-    curl -sL --retry 5 --retry-delay 15 \
-      -o /tmp/mandrel.tar.gz \
-      "https://github.com/graalvm/mandrel/releases/download/mandrel-${MANDREL_VERSION}/mandrel-java25-linux-amd64-${MANDREL_VERSION}.tar.gz" && \
-    tar -xzf /tmp/mandrel.tar.gz -C /opt && \
-    mv /opt/mandrel-* /opt/mandrel && \
-    rm /tmp/mandrel.tar.gz
+# Cache dependencies dulu sebelum copy source
+COPY pom.xml .
+RUN mvn dependency:go-offline -B -q
 
-COPY . /src
-WORKDIR /src
-RUN mvn package -B -Dnative -DskipTests \
-    -Dquarkus.native.additional-build-args="-march=${MARCH}" \
-    -Dquarkus.native.native-image-xmx=4g
+# Copy source dan build native
+COPY src ./src
+ARG NATIVE_IMAGE_EXTRA_ARGS
+RUN mvn package -Pnative -DskipTests -B \
+    -Dquarkus.native.native-image-xmx=6g \
+    -Dquarkus.native.additional-build-args="${NATIVE_IMAGE_EXTRA_ARGS}"
 
-FROM gcr.io/distroless/base-debian12
+## Stage 2: Runtime dengan distroless Debian 13
+FROM gcr.io/distroless/base-debian13:nonroot
+
 WORKDIR /app
-COPY --from=builder /src/target/*-runner /app/application
+
+COPY --from=build /build/target/*-runner /app/application
+
 EXPOSE 8080
-USER nonroot
-ENTRYPOINT ["./application", "-Dquarkus.http.host=0.0.0.0"]
+
+ENTRYPOINT ["/app/application", "-Dquarkus.http.host=0.0.0.0"]
