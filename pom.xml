@@ -46,6 +46,15 @@
             <artifactId>quarkus-arc</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.quarkiverse.jdbc</groupId>
+            <artifactId>quarkus-jdbc-sqlite</artifactId>
+            <version>3.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm-panache</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit</artifactId>
             <scope>test</scope>
@@ -113,6 +122,12 @@
                 <quarkus.package.jar.enabled>false</quarkus.package.jar.enabled>
                 <skipITs>false</skipITs>
                 <quarkus.native.enabled>true</quarkus.native.enabled>
+            </properties>
+        </profile>
+        <profile>
+            <id>sqlite-init</id>
+            <properties>
+                <quarkus.profile>sqlite-init</quarkus.profile>
             </properties>
         </profile>
     </profiles>

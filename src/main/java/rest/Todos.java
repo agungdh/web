@@ -3,6 +3,7 @@ package rest;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -34,6 +35,7 @@ public class Todos extends Controller {
     }
 
     @POST
+    @Transactional
     public void add(@RestForm @NotBlank String task) {
         if (validationFailed()) {
             todos();
@@ -55,23 +57,30 @@ public class Todos extends Controller {
 
     @Path("/Todos/{id}/update")
     @POST
+    @Transactional
     public void update(@RestPath Long id, @RestForm @NotBlank String task) {
         if (validationFailed()) {
             edit(id);
         }
-        Todo.update(id, task);
+        Todo todo = Todo.findById(id);
+        if (todo != null) {
+            todo.task = task;
+            todo.persist();
+        }
         todos();
     }
 
     @Path("/Todos/{id}/delete")
     @POST
+    @Transactional
     public void delete(@RestPath Long id) {
-        Todo.delete(id);
+        Todo.deleteById(id);
         todos();
     }
 
     @Path("/Todos/{id}/toggle")
     @POST
+    @Transactional
     public void toggle(@RestPath Long id) {
         Todo todo = Todo.findById(id);
         if (todo != null) {
