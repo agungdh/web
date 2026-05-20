@@ -23,4 +23,13 @@ public class JavaExtensions {
         }
         return sb.toString();
     }
+
+    public static String slugify(String string) {
+        if (string == null || string.isBlank()) return "";
+        return string.toLowerCase()
+                .replaceAll("[^a-z0-9\\s-]", "")
+                .replaceAll("\\s+", "-")
+                .replaceAll("-+", "-")
+                .replaceAll("^-|-$", "");
+    }
 }

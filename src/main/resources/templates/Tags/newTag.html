@@ -1,0 +1,39 @@
+{#include main.html}
+{#title}New Tag{/title}
+
+<div class="row">
+  <div class="col-md-6 col-lg-4">
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">New Tag</h3>
+      </div>
+      <div class="card-body">
+        {#form uri:Tags.add()}
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" name="name" id="name" class="form-control {#ifError 'name'}is-invalid{/ifError}" placeholder="Tag name" required/>
+            {#ifError 'name'}
+              <div class="invalid-feedback">{#error 'name'/}</div>
+            {/ifError}
+          </div>
+          <div class="mb-3">
+            <label for="slug" class="form-label">Slug</label>
+            <input type="text" name="slug" id="slug" class="form-control" placeholder="Leave empty to auto-generate"/>
+            <div class="form-text">Leave empty to auto-generate from name.</div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg"></i> Save
+            </button>
+            <a href="{uri:Tags.index}" class="btn btn-secondary">
+              <i class="bi bi-x-lg"></i> Cancel
+            </a>
+          </div>
+        {/form}
+      </div>
+    </div>
+
+  </div>
+</div>
+{/include}

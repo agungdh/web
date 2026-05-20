@@ -1,0 +1,66 @@
+{#include main.html}
+{#title}New Post{/title}
+
+<div class="row">
+  <div class="col-md-8 col-lg-9">
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">New Post</h3>
+      </div>
+      <div class="card-body">
+        {#form uri:Posts.add()}
+          <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" name="title" id="title" class="form-control {#ifError 'title'}is-invalid{/ifError}" placeholder="Post title" required/>
+            {#ifError 'title'}
+              <div class="invalid-feedback">{#error 'title'/}</div>
+            {/ifError}
+          </div>
+          <div class="mb-3">
+            <label for="slug" class="form-label">Slug</label>
+            <input type="text" name="slug" id="slug" class="form-control" placeholder="Leave empty to auto-generate"/>
+            <div class="form-text">Leave empty to auto-generate from title.</div>
+          </div>
+          <div class="mb-3">
+            <label for="type" class="form-label">Type</label>
+            <select name="type" id="type" class="form-select">
+              <option value="post">Post</option>
+              <option value="page">Page</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="content" class="form-label">Content (Markdown)</label>
+            <textarea name="content" id="content" class="form-control" data-markdown rows="15" placeholder="Write your content in markdown..."></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tags</label>
+            <div class="row">
+              {#for tag in tags}
+              <div class="col-md-4 col-lg-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="tagIds" value="{tag.id}" id="tag_{tag.id}">
+                  <label class="form-check-label" for="tag_{tag.id}">{tag.name}</label>
+                </div>
+              </div>
+              {/for}
+              {#if tags.isEmpty}
+              <p class="text-muted">No tags available. <a href="{uri:Tags.newTag}">Create one</a>.</p>
+              {/if}
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg"></i> Save
+            </button>
+            <a href="{uri:Posts.index}" class="btn btn-secondary">
+              <i class="bi bi-x-lg"></i> Cancel
+            </a>
+          </div>
+        {/form}
+      </div>
+    </div>
+
+  </div>
+</div>
+{/include}
