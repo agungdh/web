@@ -6,7 +6,7 @@ ENV HOME=/root
 ENV SDKMAN_DIR=/root/.sdkman
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl zip unzip gcc zlib1g-dev && \
+    bash curl zip unzip gcc zlib1g-dev && \
     rm -rf /var/lib/apt/lists/* && \
     curl -s "https://get.sdkman.io" | bash && \
     bash -c "source $SDKMAN_DIR/bin/sdkman-init.sh && sdk install java 25.r25-mandrel"
