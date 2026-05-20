@@ -1,37 +1,130 @@
 {#include main.html}
 {#title}Todos{/title}
-{! Add some CSS !}
+
 {#moreStyles}
 <style>
-  .todo {
-    margin: 1em;
-  }
-  .error {
-  	color: red;
-  	border-color: red;
+  .completed-task {
+    text-decoration: line-through;
+    color: var(--bs-secondary);
   }
 </style>
 {/moreStyles}
 
-  {! Iterate over our todo items !}
-  {#for todo in todos}
-    <div class="todo">
-      {! This invokes the JavaExtensions.capitalise(String) extension method !}
-      {todo.task.capitalise}
-      {#if todo.completed}
-        (done {todo.completed.since})
-      {/if}
-    </div>
-  {/for} 
+<div class="row">
+  <div class="col-12">
 
-  {! A form action calling Todos.add() !}
-  {#form uri:Todos.add()}
-    {! We add some information if there's a validation error !}
-    <input name="task" placeholder="Enter new task" {#ifError 'task'}class="error"{/}/>
-    {#ifError 'task'}
-      <div class="error">
-      	Error: {#error 'task'/}
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Todo List</h3>
       </div>
-    {/ifError}
-  {/form}
+      <div class="card-body p-0">
+        <table class="table table-striped table-hover mb-0">
+          <thead>
+            <tr>
+              <th style="width: 10px">#</th>
+              <th>Task</th>
+              <th style="width: 130px">Status</th>
+              <th style="width: 180px">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#for todo in todos}
+            <tr>
+              <td>{todo.id}</td>
+              <td>
+                <span class="{#if todo.completed}completed-task{/if}">
+                  {todo.task.capitalise}
+                </span>
+              </td>
+              <td>
+                {#if todo.completed}
+                  <span class="badge text-bg-success">Done</span>
+                  <small class="text-muted d-block">{todo.completed.since}</small>
+                {#else}
+                  <span class="badge text-bg-warning">Pending</span>
+                {/if}
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  {#if todo.completed}
+                    {#form uri:Todos.toggle(todo.id)}
+                      <button type="submit" class="btn btn-outline-warning" title="Mark as pending">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                      </button>
+                    {/form}
+                  {#else}
+                    {#form uri:Todos.toggle(todo.id)}
+                      <button type="submit" class="btn btn-outline-success" title="Mark as done">
+                        <i class="bi bi-check-lg"></i>
+                      </button>
+                    {/form}
+                  {/if}
+                  <a href="{uri:Todos.edit(todo.id)}" class="btn btn-outline-primary" title="Edit">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{todo.id}" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+
+                <div class="modal fade" id="deleteModal{todo.id}" tabindex="-1" aria-labelledby="deleteModalLabel{todo.id}" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel{todo.id}">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Are you sure you want to delete <strong>"{todo.task.capitalise}"</strong>?</p>
+                        <p class="text-muted mb-0">This action cannot be undone.</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        {#form uri:Todos.delete(todo.id)}
+                          <button type="submit" class="btn btn-danger">Delete</button>
+                        {/form}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            {/for}
+            {#if todos.isEmpty}
+            <tr>
+              <td colspan="4" class="text-center text-muted py-4">
+                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                No todos yet. Add one below!
+              </td>
+            </tr>
+            {/if}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-header">
+        <h3 class="card-title">Add New Todo</h3>
+      </div>
+      <div class="card-body">
+        {#form uri:Todos.add()}
+          <div class="mb-3">
+            <label for="task" class="form-label">Task</label>
+            <input type="text" name="task" id="task" class="form-control {#ifError 'task'}is-invalid{/ifError}" placeholder="What needs to be done?" required/>
+            {#ifError 'task'}
+              <div class="invalid-feedback">
+                {#error 'task'/}
+              </div>
+            {/ifError}
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Add Todo
+          </button>
+        {/form}
+      </div>
+    </div>
+
+  </div>
+</div>
 {/include}
