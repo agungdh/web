@@ -25,16 +25,18 @@ public class Tags extends Controller {
         public static native TemplateInstance edit(Tag tag);
     }
 
+    @Path("/admin/tags")
     public TemplateInstance index() {
         List<Tag> tags = Tag.list("deletedAt is null order by name");
         return Templates.index(tags);
     }
 
-    @Path("/Tags/new")
+    @Path("/admin/tags/new")
     public TemplateInstance newTag() {
         return Templates.newTag();
     }
 
+    @Path("/admin/tags")
     @POST
     @Transactional
     public void add(@RestForm @NotBlank String name, @RestForm String slug) {
@@ -49,7 +51,7 @@ public class Tags extends Controller {
         index();
     }
 
-    @Path("/Tags/{id}/edit")
+    @Path("/admin/tags/{id}/edit")
     public TemplateInstance edit(@RestPath Long id) {
         Tag tag = Tag.find("id = ?1 and deletedAt is null", id).firstResult();
         if (tag == null) {
@@ -58,7 +60,7 @@ public class Tags extends Controller {
         return Templates.edit(tag);
     }
 
-    @Path("/Tags/{id}/update")
+    @Path("/admin/tags/{id}/update")
     @POST
     @Transactional
     public void update(@RestPath Long id, @RestForm @NotBlank String name, @RestForm String slug) {
@@ -75,7 +77,7 @@ public class Tags extends Controller {
         index();
     }
 
-    @Path("/Tags/{id}/delete")
+    @Path("/admin/tags/{id}/delete")
     @POST
     @Transactional
     public void delete(@RestPath Long id) {

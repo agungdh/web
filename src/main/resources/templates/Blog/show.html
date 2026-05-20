@@ -1,0 +1,37 @@
+{#include main.html}
+{#title}{post.title}{/title}
+
+<article>
+  <header class="article-header">
+    <h1>{post.title}</h1>
+    <div class="meta">
+      Posted on {time:format(post.createdAt, 'dd MMM yyyy')}
+      {#if post.type == 'page'} &middot; <span>Page</span>{/if}
+    </div>
+    {#if !post.tags.isEmpty}
+    <div class="tags">
+      {#for tag in post.tags}
+      <a href="{uri:Blog.byTag(tag.slug)}">{tag.name}</a>
+      {/for}
+    </div>
+    {/if}
+  </header>
+
+  <div class="article-content" id="markdown-content" style="display:none;"></div>
+</article>
+
+<hr class="divider">
+
+<a href="{uri:Blog.index}" class="btn-back">&larr; Back to Blog</a>
+
+<script id="raw-markdown" type="text/markdown">{post.content.or("")}</script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var raw = document.getElementById('raw-markdown').textContent;
+    var mdEl = document.getElementById('markdown-content');
+    mdEl.innerHTML = marked.parse(raw);
+    mdEl.style.display = '';
+  });
+</script>
+{/include}

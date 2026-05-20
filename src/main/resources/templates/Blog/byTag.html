@@ -1,0 +1,37 @@
+{#include main.html}
+{#title}Posts tagged &ldquo;{tag.name}&rdquo;{/title}
+
+<h2 class="page-title">Posts tagged &ldquo;{tag.name}&rdquo;</h2>
+
+{#if posts.isEmpty}
+<div class="empty">
+  <div class="empty-icon">&nbsp;</div>
+  <p>No posts with this tag yet.</p>
+</div>
+{/if}
+
+{#for post in posts}
+<article class="post-card">
+  <h2><a href="{uri:Blog.show(post.slug)}">{post.title}</a></h2>
+  <div class="meta">
+    {time:format(post.createdAt, 'dd MMM yyyy')}
+  </div>
+  <div class="excerpt">
+    {#let content=post.content.or("")}
+    {content}
+    {/let}
+  </div>
+  {#if !post.tags.isEmpty}
+  <div class="tags">
+    {#for t in post.tags}
+    <a href="{uri:Blog.byTag(t.slug)}">{t.name}</a>
+    {/for}
+  </div>
+  {/if}
+  <a href="{uri:Blog.show(post.slug)}" class="readmore">Read more &rarr;</a>
+</article>
+{/for}
+
+<hr class="divider">
+<a href="{uri:Blog.index}" class="btn-back">&larr; All Posts</a>
+{/include}

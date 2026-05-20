@@ -1,0 +1,18 @@
+{#include main.html}
+{#title}Tags{/title}
+
+<h2 class="page-title">Tags</h2>
+
+{#if tags.isEmpty}
+<div class="empty">
+  <div class="empty-icon">&nbsp;</div>
+  <p>No tags yet.</p>
+</div>
+{#else}
+<div class="tag-cloud">
+  {#for tag in tags}
+  <a href="{uri:Blog.byTag(tag.slug)}">{tag.name}</a>
+  {/for}
+</div>
+{/if}
+{/include}

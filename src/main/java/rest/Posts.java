@@ -26,17 +26,19 @@ public class Posts extends Controller {
         public static native TemplateInstance edit(Post post, List<Tag> tags);
     }
 
+    @Path("/admin/posts")
     public TemplateInstance index() {
         List<Post> posts = Post.list("deletedAt is null order by createdAt desc");
         return Templates.index(posts);
     }
 
-    @Path("/Posts/new")
+    @Path("/admin/posts/new")
     public TemplateInstance newPost() {
         List<Tag> tags = Tag.list("deletedAt is null order by name");
         return Templates.newPost(tags);
     }
 
+    @Path("/admin/posts")
     @POST
     @Transactional
     public void add(@RestForm @NotBlank String title,
@@ -65,7 +67,7 @@ public class Posts extends Controller {
         index();
     }
 
-    @Path("/Posts/{id}/edit")
+    @Path("/admin/posts/{id}/edit")
     public TemplateInstance edit(@RestPath Long id) {
         Post post = Post.find("id = ?1 and deletedAt is null", id).firstResult();
         if (post == null) {
@@ -75,7 +77,7 @@ public class Posts extends Controller {
         return Templates.edit(post, tags);
     }
 
-    @Path("/Posts/{id}/update")
+    @Path("/admin/posts/{id}/update")
     @POST
     @Transactional
     public void update(@RestPath Long id,
@@ -107,7 +109,7 @@ public class Posts extends Controller {
         index();
     }
 
-    @Path("/Posts/{id}/delete")
+    @Path("/admin/posts/{id}/delete")
     @POST
     @Transactional
     public void delete(@RestPath Long id) {

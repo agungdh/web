@@ -1,12 +1,12 @@
-{#include main.html}
+{#include admin.html}
 {#title}Edit Tag{/title}
 
-<div class="row">
+<div class="row justify-content-center">
   <div class="col-md-6 col-lg-4">
 
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Edit Tag #{tag.id}</h3>
+        <h5 class="card-title mb-0">Edit Tag #{tag.id}</h5>
       </div>
       <div class="card-body">
         {#form uri:Tags.update(tag.id)}

@@ -1,78 +1,72 @@
-{#include main.html}
+{#include admin.html}
 {#title}Tags{/title}
 
-<div class="row">
-  <div class="col-12">
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="card-title mb-0">Tags</h5>
+    <a href="{uri:Tags.newTag}" class="btn btn-primary btn-sm">
+      <i class="bi bi-plus-lg"></i> New Tag
+    </a>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-striped table-hover mb-0">
+      <thead>
+        <tr>
+          <th style="width: 10px">#</th>
+          <th>Name</th>
+          <th>Slug</th>
+          <th style="width: 120px">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#for tag in tags}
+        <tr>
+          <td>{tag.id}</td>
+          <td><span class="badge text-bg-secondary">{tag.name}</span></td>
+          <td><code>{tag.slug}</code></td>
+          <td>
+            <div class="btn-group btn-group-sm">
+              <a href="{uri:Tags.edit(tag.id)}" class="btn btn-outline-primary" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteTagModal{tag.id}" title="Delete">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
 
-    <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="card-title">Tags</h3>
-        <a href="{uri:Tags.newTag}" class="btn btn-primary btn-sm">
-          <i class="bi bi-plus-lg"></i> New Tag
-        </a>
-      </div>
-      <div class="card-body p-0">
-        <table class="table table-striped table-hover mb-0">
-          <thead>
-            <tr>
-              <th style="width: 10px">#</th>
-              <th>Name</th>
-              <th>Slug</th>
-              <th style="width: 120px">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#for tag in tags}
-            <tr>
-              <td>{tag.id}</td>
-              <td><span class="badge text-bg-secondary">{tag.name}</span></td>
-              <td><code>{tag.slug}</code></td>
-              <td>
-                <div class="btn-group btn-group-sm">
-                  <a href="{uri:Tags.edit(tag.id)}" class="btn btn-outline-primary" title="Edit">
-                    <i class="bi bi-pencil"></i>
-                  </a>
-                  <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteTagModal{tag.id}" title="Delete">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-
-                <div class="modal fade" id="deleteTagModal{tag.id}" tabindex="-1" aria-labelledby="deleteTagModalLabel{tag.id}" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="deleteTagModalLabel{tag.id}">Confirm Delete</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <p>Are you sure you want to delete tag <strong>"{tag.name}"</strong>?</p>
-                        <p class="text-muted mb-0">This will soft-delete the tag.</p>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        {#form uri:Tags.delete(tag.id)}
-                          <button type="submit" class="btn btn-danger">Delete</button>
-                        {/form}
-                      </div>
-                    </div>
+            <div class="modal fade" id="deleteTagModal{tag.id}" tabindex="-1" aria-labelledby="deleteTagModalLabel{tag.id}" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteTagModalLabel{tag.id}">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Are you sure you want to delete tag <strong>"{tag.name}"</strong>?</p>
+                    <p class="text-muted mb-0">This will soft-delete the tag.</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    {#form uri:Tags.delete(tag.id)}
+                      <button type="submit" class="btn btn-danger">Delete</button>
+                    {/form}
                   </div>
                 </div>
-              </td>
-            </tr>
-            {/for}
-            {#if tags.isEmpty}
-            <tr>
-              <td colspan="4" class="text-center text-muted py-4">
-                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
-                No tags yet.
-              </td>
-            </tr>
-            {/if}
-          </tbody>
-        </table>
-      </div>
-    </div>
-
+              </div>
+            </div>
+          </td>
+        </tr>
+        {/for}
+        {#if tags.isEmpty}
+        <tr>
+          <td colspan="4" class="text-center text-muted py-4">
+            <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+            No tags yet.
+          </td>
+        </tr>
+        {/if}
+      </tbody>
+    </table>
   </div>
 </div>
 {/include}
