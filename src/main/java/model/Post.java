@@ -6,15 +6,22 @@ import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
-public class Post extends PanacheEntity {
+public class Post extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     public String title;
     public String slug;
@@ -52,5 +59,10 @@ public class Post extends PanacheEntity {
             slug = base + "-" + counter++;
         }
         return slug;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "<" + id + ">";
     }
 }

@@ -3,11 +3,18 @@ package model;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
-public class Tag extends PanacheEntity {
+public class Tag extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     public String name;
     public String slug;
@@ -32,5 +39,10 @@ public class Tag extends PanacheEntity {
             slug = base + "-" + counter++;
         }
         return slug;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "<" + id + ">";
     }
 }
