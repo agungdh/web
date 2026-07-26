@@ -1,0 +1,78 @@
+import Hero from './Hero';
+import SkillCard from './SkillCard';
+
+const skillCategories = [
+  {
+    category: 'Languages',
+    icon: '💻',
+    gradient: 'from-blue-400 to-purple-400',
+    skills: ['JavaScript', 'PHP', 'Golang', 'Java'],
+  },
+  {
+    category: 'Frameworks',
+    icon: '⚙️',
+    gradient: 'from-orange-400 to-red-400',
+    skills: ['Laravel', 'Spring Boot', 'Quarkus'],
+  },
+  {
+    category: 'Databases',
+    icon: '🗃️',
+    gradient: 'from-cyan-400 to-blue-400',
+    skills: ['MySQL', 'MariaDB', 'PostgreSQL', 'SQLite', 'SQL Server'],
+  },
+  {
+    category: 'Cache',
+    icon: '⚡',
+    gradient: 'from-yellow-400 to-orange-400',
+    skills: ['Redis', 'Memcache'],
+  },
+  {
+    category: 'Messaging',
+    icon: '💬',
+    gradient: 'from-pink-400 to-rose-400',
+    skills: ['Kafka', 'RabbitMQ'],
+  },
+  {
+    category: 'OS & Tools',
+    icon: '🛠️',
+    gradient: 'from-green-400 to-emerald-400',
+    skills: ['Linux', 'Bash'],
+  },
+];
+
+export default function ProfilePage() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <main className="flex-1">
+        <Hero />
+
+        <section className="px-4 pb-24">
+          <div className="mx-auto max-w-4xl">
+            <h2 className="text-2xl font-bold text-center mb-2 text-slate-200">
+              Tech Stack
+            </h2>
+            <p className="text-center text-slate-500 mb-10 text-sm">
+              Technologies I work with on a daily basis
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {skillCategories.map((cat) => (
+                <SkillCard
+                  key={cat.category}
+                  category={cat.category}
+                  icon={cat.icon}
+                  skills={cat.skills}
+                  gradient={cat.gradient}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="py-8 text-center text-slate-600 text-sm border-t border-slate-800">
+        &copy; {new Date().getFullYear()} AgungDH. Built with Astro, React &amp; Tailwind CSS.
+      </footer>
+    </div>
+  );
+}
